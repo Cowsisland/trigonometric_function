@@ -1,1 +1,4 @@
-# trigonometric_function
+# traitを勉強する
+
+## 三角関数を実装
+それぞれの三角関数のtraitを実装し、f64型にtraitを実装していく
