@@ -1,51 +1,21 @@
-use trigonometric_function::model::*;
-
-use std::f64::consts::PI;
-
-trait TrigFunctions {
-    fn to_radians(self) -> f64;
-    fn sin(self) -> f64;
-    fn cos(self) -> f64;
-    fn tan(self) -> f64;
-    // fn arcsin(self) -> f64;
-    // fn arccos(self) -> f64;
-    // fn arctan(self) -> f64;
-}
-
-impl TrigFunctions for f64 {
-    fn to_radians(self) -> f64 {
-        self * PI / 180.0
-    }
-
-    fn sin(self) -> f64 {
-        self.to_radians().sin()
-    }
-
-    fn cos(self) -> f64 {
-        self.to_radians().cos()
-    }
-
-    fn tan(self) -> f64 {
-        self.to_radians().tan()
-    }
-
-    // fn arcsin(self) -> f64 {
-    //     self.to_radians().arcsin()
-    // }
-
-    // fn arccos(self) -> f64 {
-    //     self.to_radians().arccos()
-    // }
-
-    // fn arctan(self) -> f64 {
-    //     self.to_radians().arctan()
-    // }
-}
-
+use trigonometric_function::trig_functions::*;
 
 fn main() {
-    let rad = 45.0;
-    println!("sin: {}", rad.sin());
-    println!("cos: {}", rad.cos());
-    println!("tan: {}", rad.tan());
+    let sin = calc_sin_function(45.0);
+    println!("sin: {}", sin.unwrap());
+
+    let cos = calc_cos_function(45.0);
+    println!("cos: {}", cos.unwrap());
+
+    let tan = calc_tan_function(45.0);
+    println!("tan: {}", tan.unwrap());
+
+    let arcsin = calc_arcsin_function(45.0);
+    println!("arcsin: {}", arcsin.unwrap());
+
+    let arccos = calc_arccos_function(45.0);
+    println!("arccos: {}", arccos.unwrap());
+
+    let arctan = calc_arctan_function(45.0);
+    println!("arctan: {}", arctan.unwrap());
 }

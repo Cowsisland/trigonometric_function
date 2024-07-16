@@ -1,1 +1,1 @@
-pub mod model;
+pub mod trig_functions;
