@@ -1,7 +1,6 @@
-// todo: Error処理は後で書く
 use std::{f64::consts::PI, fmt::Error};
 
-// 一旦traitで書く
+// 三角関数用トレイト
 pub trait TrigFunctions {
     fn to_radians(self) -> Self;
     fn sin(self) -> Self;
