@@ -13,6 +13,7 @@ pub trait TrigFunctions {
 }
 
 // f64型にTrigFunctionsトレイトを実装
+// TrigFunctionsトレイトはf64にしか実装していないが、例えばi32型にも実装すると、i32も受け取れるようになる
 impl TrigFunctions for f64 {
     fn to_radians(self) -> Self {
         self * PI / 180.0
@@ -63,7 +64,6 @@ impl TrigFunctions for f64 {
 }
 
 // sinを計算して返す
-// TrigFunctionsトレイトはf64にしか実装していないが、例えばi32型にも実装すると、i32も受け取れるようになる
 pub fn calc_sin_function<T: TrigFunctions>(angle: T) -> Result<T, Error> {
     Ok(angle.sin())
 }
