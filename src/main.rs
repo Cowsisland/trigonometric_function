@@ -1,8 +1,9 @@
-use trigonometric_function::trig_functions::*;
+use trigonometric_function::{number::Number, trig_functions::*};
 
 fn main() {
-    let sin = calc_sin_function(45.0);
-    println!("sin: {}", sin.unwrap());
+    let angle = Number::F64(45.0);
+    let sin = calc_sin_function(angle);
+    println!("sin: {}", sin.unwrap().to_f64());
 
     // let cos = calc_cos_function(45.0);
     // println!("cos: {}", cos.unwrap());
