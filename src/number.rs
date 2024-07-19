@@ -1,5 +1,5 @@
 use std::fmt::Display;
-use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, Mul, MulAssign, Neg, Sub, SubAssign, DivAssign};
 use std::cmp::Ordering;
 
 #[derive(Debug, Clone, Copy)]
@@ -51,8 +51,7 @@ impl Display for Number {
     }
 }
 
-// 四則演算の実装
-// 下記の理解を深める
+// std::ops 配下の下記のtraitを実装することで四則演算が可能になる
 impl Add for Number {
     type Output = Self;
 
@@ -92,10 +91,24 @@ impl AddAssign for Number {
     }
 }
 
+// SubAssignの実装
+impl SubAssign for Number {
+    fn sub_assign(&mut self, other: Self) {
+        *self = Number::F64(self.to_f64() * other.to_f64());
+    }
+}
+
 // MulAssignの実装
 impl MulAssign for Number {
     fn mul_assign(&mut self, other: Self) {
         *self = Number::F64(self.to_f64() * other.to_f64());
+    }
+}
+
+// DivAssignの実装
+impl DivAssign for Number {
+    fn div_assign(&mut self, other: Self) {
+        *self = Number::F64(self.to_f64() / other.to_f64());
     }
 }
 
