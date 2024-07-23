@@ -5,8 +5,8 @@ use crate::number;
 use number::Number;
 
 // 三角関数用トレイト
-// 演算を行うため、enum型のNumber型に対して実装
-pub trait TrigFunctions {
+// 演算を行うため、Numberトレイトを継承する
+pub trait TrigFunctions: Number {
     type T;
     fn to_radians(self) -> Self::T;
     fn sin(self) -> Self::T;
@@ -18,13 +18,13 @@ pub trait TrigFunctions {
 }
 
 // Number型にTrigFunctionsトレイトを実装
-// typeの指定により、返り値はNumber型に固定
-impl TrigFunctions for Number {
-    type T = Number;
+// 返り値の型はf64ただ一つに定まるため、typeの指定
+impl TrigFunctions for f64 {
+    type T = f64;
 
     fn to_radians(self) -> Self::T {
-        let pi = Number::F64(PI);
-        let pi_angle = Number::F64(180.0);
+        let pi = PI;
+        let pi_angle = 180.0;
         self * pi / pi_angle
     }
 
@@ -33,13 +33,13 @@ impl TrigFunctions for Number {
         let x = self.to_radians();
         // テイラー級数展開によるsinの近似計算
         let mut term = x; // 初項
-        let mut result = Number::F64(0.0);
-        let mut n = Number::I32(1);
+        let mut result = 0.0;
+        let mut n = 1;
         
-        while term.abs() > Number::F64(1e-10) { // 精度を指定
+        while term.abs() > 1e-10 { // 精度を指定
             result += term;
-            term *= -x * x / ((Number::I32(2) * n) * (Number::I32(2) * n + Number::I32(1)));
-            n += Number::I32(1);
+            term *= -x * x / ((2 * n) * (2 * n + 1)).to_f64();
+            n += 1;
         }
         
         result
@@ -54,14 +54,14 @@ impl TrigFunctions for Number {
     }
 
     fn arcsin(self) -> Self::T {
-        if self.to_radians() < Number::F64(-1.0) || self.to_radians() > Number::F64(1.0) {
+        if self.to_radians() < -1.0 || self.to_radians() > 1.0 {
             panic!("arcsin is undefined for values outside the range [-1, 1]");
         }
         todo!();
     }
 
     fn arccos(self) -> Self::T {
-        if self.to_radians() < Number::F64(-1.0) || self.to_radians() > Number::F64(1.0) {
+        if self.to_radians() < -1.0 || self.to_radians() > 1.0 {
             panic!("arccos is undefined for values outside the range [-1, 1]");
         }
         todo!();
@@ -69,6 +69,19 @@ impl TrigFunctions for Number {
 
     fn arctan(self) -> Self::T {
         todo!();
+    }
+}
+
+
+// 以下はテストコードとして再実装
+#[cfg(test)]
+mod trig_functions_tests {
+    use crate::trig_functions::TrigFunctions;
+
+    #[test]
+    fn test_sin() {
+        let angle = 45.0;
+        assert_eq!(angle.sin(), 0.7071067811796194);
     }
 }
 

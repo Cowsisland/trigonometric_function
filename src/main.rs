@@ -1,9 +1,9 @@
-use trigonometric_function::{number::Number, trig_functions::*};
+use trigonometric_function::trig_functions::*;
 
 fn main() {
     // sinを実行
-    let test_angle = Number::F64(45.0);
-    println!("sin: {}", test_angle.sin().to_f64());
+    let test_angle = 45.0;
+    println!("sin: {}", test_angle.sin());
 
     // let angle = Number::F64(45.0);
     // let sin = calc_sin_function(angle);
