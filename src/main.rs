@@ -2,18 +2,14 @@ use trigonometric_function::trig_functions::*;
 
 fn main() {
     // sinを実行
-    let test_angle = 45.0;
-    println!("sin: {}", test_angle.sin());
+    let angle = 45.0;
+    println!("sin: {}", angle.sin());
 
-    // let angle = Number::F64(45.0);
-    // let sin = calc_sin_function(angle);
-    // println!("sin: {}", sin.unwrap().to_f64());
+    // cosを実行
+    println!("cos: {}", angle.cos());
 
-    // let cos = calc_cos_function(45.0);
-    // println!("cos: {}", cos.unwrap());
-
-    // let tan = calc_tan_function(45.0);
-    // println!("tan: {}", tan.unwrap());
+    // tanを実行
+    println!("tan: {}", angle.tan());
 
     // let arcsin = calc_arcsin_function(45.0);
     // println!("arcsin: {}", arcsin.unwrap());

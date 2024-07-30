@@ -46,11 +46,27 @@ impl TrigFunctions for f64 {
     }
 
     fn cos(self) -> Self::T {
-        todo!();
+        // 角度をラジアンに変換
+        let x = self.to_radians();
+        // テイラー級数展開によるcosの近似計算
+        let mut term = 1.0; // 初項
+        let mut result = 0.0;
+        let mut n = 0;
+        
+        while term.abs() > 1e-10 { // 精度を指定
+            result += term;
+            term *= -x * x / ((2 * n + 1) as f64 * (2 * n + 2) as f64);
+            n += 1;
+        }
+        
+        result
     }
 
     fn tan(self) -> Self::T {
-        todo!();
+        if self.cos() == 0.0 {
+            panic!("cos is undefined for values outside the range 0");
+        }
+        self.sin() / self.cos()
     }
 
     fn arcsin(self) -> Self::T {
@@ -73,44 +89,16 @@ impl TrigFunctions for f64 {
 }
 
 
-// 以下はテストコードとして再実装
+// 以下はテストコード
 #[cfg(test)]
 mod trig_functions_tests {
     use crate::trig_functions::TrigFunctions;
 
     #[test]
-    fn test_sin() {
+    fn test_trig_functions() {
         let angle = 45.0;
         assert_eq!(angle.sin(), 0.7071067811796194);
+        assert_eq!(angle.cos(), 0.5253219888177297);
+        assert_eq!(angle.tan(), 1.6197751905438615);
     }
 }
-
-// // sinを計算して返す
-// pub fn calc_sin_function<T: TrigFunctions<T = Number> + Display>(angle: T) -> Result<Number, Error> {
-//     Ok(angle.sin())
-// }
-
-// // cosを計算して返す
-// pub fn calc_cos_function<T: TrigFunctions<T = Number> + Display>(angle: T) -> Result<Number, Error> {
-//     Ok(angle.cos())
-// }
-
-// // tanを計算して返す
-// pub fn calc_tan_function<T: TrigFunctions<T = Number> + Display>(angle: T) -> Result<Number, Error> {
-//     Ok(angle.tan())
-// }
-
-// // arcsinを計算して返す
-// pub fn calc_arcsin_function<T: TrigFunctions<T = Number> + Display>(angle: T) -> Result<Number, Error> {
-//     Ok(angle.arcsin())
-// }
-
-// // arccosを計算して返す
-// pub fn calc_arccos_function<T: TrigFunctions<T = Number> + Display>(angle: T) -> Result<Number, Error> {
-//     Ok(angle.arccos())
-// }
-
-// // arctanを計算して返す
-// pub fn calc_arctan_function<T: TrigFunctions<T = Number> + Display>(angle: T) -> Result<Number, Error> {
-//     Ok(angle.arctan())
-// }
