@@ -1,8 +1,10 @@
 use trigonometric_function::trig_functions::*;
 
 fn main() {
-    // sinを実行
+    // 角度（弧度法）
     let angle = 45.0;
+
+    // sinを実行
     println!("sin: {}", angle.sin());
 
     // cosを実行
