@@ -1,20 +1,20 @@
 use std::f64::consts::{PI, FRAC_PI_2};
 // use std::fmt::{Display, Error};
-
-use crate::number;
 use number::Number;
+
+use crate::{error::TrigError, number};
 
 // 三角関数用トレイト
 // 演算を行うため、Numberトレイトを継承する
 pub trait TrigFunctions: Number {
     type T;
     fn to_radians(self) -> Self::T;
-    fn sin(self) -> Self::T;
-    fn cos(self) -> Self::T;
-    fn tan(self) -> Self::T;
-    fn arcsin(self) -> Self::T;
-    fn arccos(self) -> Self::T;
-    fn arctan(self) -> Self::T;
+    fn my_sin(self) -> Option<Self::T>;
+    fn my_cos(self) -> Option<Self::T>;
+    fn my_tan(self) -> Result<Self::T, TrigError>;
+    fn my_arcsin(self) -> Result<Self::T, TrigError>;
+    fn my_arccos(self) -> Result<Self::T, TrigError>;
+    fn my_arctan(self) -> Option<Self::T>;
 }
 
 // Number型にTrigFunctionsトレイトを実装
@@ -28,7 +28,7 @@ impl TrigFunctions for f64 {
         self * pi / pi_angle
     }
 
-    fn sin(self) -> Self::T {
+    fn my_sin(self) -> Option<Self::T> {
         // 角度をラジアンに変換
         let x = self.to_radians();
         // テイラー級数展開によるsinの近似計算
@@ -42,10 +42,10 @@ impl TrigFunctions for f64 {
             n += 1;
         }
         
-        result
+        Some(result)
     }
 
-    fn cos(self) -> Self::T {
+    fn my_cos(self) -> Option<Self::T> {
         // 角度をラジアンに変換
         let x = self.to_radians();
         // テイラー級数展開によるcosの近似計算
@@ -59,19 +59,21 @@ impl TrigFunctions for f64 {
             n += 1;
         }
         
-        result
+        Some(result)
     }
 
-    fn tan(self) -> Self::T {
+    fn my_tan(self) -> Result<Self::T, TrigError> {
         if self.cos() == 0.0 {
-            panic!("cos is undefined for values outside the range 0");
+            //panic!("cos is undefined for values outside the range 0");
+            return Err(TrigError::OutOfRange(self));
         }
-        self.sin() / self.cos()
+        Ok(self.sin() / self.cos())
     }
 
-    fn arcsin(self) -> Self::T {
+    fn my_arcsin(self) -> Result<Self::T, TrigError> {
         if self.to_radians() < -1.0 || self.to_radians() > 1.0 {
-            panic!("arcsin is undefined for values outside the range [-1, 1]");
+            // panic!("arcsin is undefined for values outside the range [-1, 1]");
+            return Err(TrigError::OutOfRange(self));
         }
 
         let x = self;
@@ -85,19 +87,21 @@ impl TrigFunctions for f64 {
             n += 1;
         }
 
-        result
+        Ok(result)
     }
 
-    fn arccos(self) -> Self::T {
+    fn my_arccos(self) -> Result<Self::T, TrigError> {
         if self.to_radians() < -1.0 || self.to_radians() > 1.0 {
-            panic!("arccos is undefined for values outside the range [-1, 1]");
+            // panic!("arccos is undefined for values outside the range [-1, 1]");
+            return Err(TrigError::OutOfRange(self));
         }
         // arccos(x) = π/2 - arcsin(x)
         let half_pi = FRAC_PI_2;
-        half_pi - self.arcsin()
+        let arcsin_val = self.my_arcsin()?;
+        Ok(half_pi - arcsin_val)
     }
 
-    fn arctan(self) -> Self::T {
+    fn my_arctan(self) -> Option<Self::T> {
         let x = self;
         let mut term = x;
         let mut result = x;
@@ -109,7 +113,7 @@ impl TrigFunctions for f64 {
             n += 1;
         }
 
-        result
+        Some(result)
     }
 }
 
@@ -122,13 +126,13 @@ mod trig_functions_tests {
     #[test]
     fn test_trig_functions() {
         let angle = 45.0;
-        assert_eq!(angle.sin(), 0.7071067811796194);
-        assert_eq!(angle.cos(), 0.5253219888177297);
-        assert_eq!(angle.tan(), 1.6197751905438615);
+        assert_eq!(angle.my_sin().unwrap(), 0.7071067811796194);
+        assert_eq!(angle.my_cos().unwrap(), 0.7071067811869363);
+        assert_eq!(angle.my_tan().unwrap(), 1.6197751905438615);
 
         let val = 0.5;
-        assert_eq!(val.arcsin(), 0.5235987755858897);
-        assert_eq!(val.arccos(), 1.0471975512090068);
-        assert_eq!(val.arctan(), 0.4603442826192663);
+        assert_eq!(val.my_arcsin().unwrap(), 0.5235987755858897);
+        assert_eq!(val.my_arccos().unwrap(), 1.0471975512090068);
+        assert_eq!(val.my_arctan().unwrap(), 0.4603442826192663);
     }
 }
