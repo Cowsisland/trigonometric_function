@@ -13,12 +13,14 @@ fn main() {
     // tanを実行
     println!("tan: {}", angle.tan());
 
-    // let arcsin = calc_arcsin_function(45.0);
-    // println!("arcsin: {}", arcsin.unwrap());
+    // 値
+    let val = 0.5;
+    // arcsinを実行
+    println!("arcsin: {}", val.arcsin());
 
-    // let arccos = calc_arccos_function(45.0);
-    // println!("arccos: {}", arccos.unwrap());
+    // arccosを実行
+    println!("arccos: {}", val.arccos());
 
-    // let arctan = calc_arctan_function(45.0);
-    // println!("arctan: {}", arctan.unwrap());
+    // arctanを実行
+    println!("arctan: {}", val.arctan());
 }

@@ -1,4 +1,4 @@
-use std::f64::consts::PI;
+use std::f64::consts::{PI, FRAC_PI_2};
 // use std::fmt::{Display, Error};
 
 use crate::number;
@@ -73,18 +73,43 @@ impl TrigFunctions for f64 {
         if self.to_radians() < -1.0 || self.to_radians() > 1.0 {
             panic!("arcsin is undefined for values outside the range [-1, 1]");
         }
-        todo!();
+
+        let x = self;
+        let mut term = x;
+        let mut result = x;
+        let mut n = 1;
+
+        while term.abs() > 1e-10 {
+            term *= (x * x * (2 * n - 1) as f64 * (2 * n - 1) as f64) / ((2 * n) as f64 * (2 * n + 1) as f64);
+            result += term;
+            n += 1;
+        }
+
+        result
     }
 
     fn arccos(self) -> Self::T {
         if self.to_radians() < -1.0 || self.to_radians() > 1.0 {
             panic!("arccos is undefined for values outside the range [-1, 1]");
         }
-        todo!();
+        // arccos(x) = π/2 - arcsin(x)
+        let half_pi = FRAC_PI_2;
+        half_pi - self.arcsin()
     }
 
     fn arctan(self) -> Self::T {
-        todo!();
+        let x = self;
+        let mut term = x;
+        let mut result = x;
+        let mut n = 1;
+
+        while term.abs() > 1e-10 {
+            term *= -x * x / ((2 * n) as f64 + 1.0);
+            result += term;
+            n += 1;
+        }
+
+        result
     }
 }
 
@@ -100,5 +125,10 @@ mod trig_functions_tests {
         assert_eq!(angle.sin(), 0.7071067811796194);
         assert_eq!(angle.cos(), 0.5253219888177297);
         assert_eq!(angle.tan(), 1.6197751905438615);
+
+        let val = 0.5;
+        assert_eq!(val.arcsin(), 0.5235987755858897);
+        assert_eq!(val.arccos(), 1.0471975512090068);
+        assert_eq!(val.arctan(), 0.4603442826192663);
     }
 }
