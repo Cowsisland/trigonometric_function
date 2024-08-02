@@ -14,7 +14,7 @@ pub trait TrigFunctions: Number {
     fn my_tan(self) -> Result<Self::T, TrigError>;
     fn my_arcsin(self) -> Result<Self::T, TrigError>;
     fn my_arccos(self) -> Result<Self::T, TrigError>;
-    fn my_arctan(self) -> Option<Self::T>;
+    fn my_arctan(self) -> Result<Self::T, TrigError>;
 }
 
 // Number型にTrigFunctionsトレイトを実装
@@ -65,7 +65,7 @@ impl TrigFunctions for f64 {
     fn my_tan(self) -> Result<Self::T, TrigError> {
         if self.cos() == 0.0 {
             //panic!("cos is undefined for values outside the range 0");
-            return Err(TrigError::OutOfRange(self));
+            return Err(TrigError::OutOfRangeForTan(self));
         }
         Ok(self.sin() / self.cos())
     }
@@ -73,7 +73,7 @@ impl TrigFunctions for f64 {
     fn my_arcsin(self) -> Result<Self::T, TrigError> {
         if self.to_radians() < -1.0 || self.to_radians() > 1.0 {
             // panic!("arcsin is undefined for values outside the range [-1, 1]");
-            return Err(TrigError::OutOfRange(self));
+            return Err(TrigError::OutOfRangeForArcsin(self));
         }
 
         let x = self;
@@ -82,7 +82,14 @@ impl TrigFunctions for f64 {
         let mut n = 1;
 
         while term.abs() > 1e-10 {
+            let prev_term = term;
             term *= (x * x * (2 * n - 1) as f64 * (2 * n - 1) as f64) / ((2 * n) as f64 * (2 * n + 1) as f64);
+
+            // オーバーフローをチェック
+            if term.is_infinite() || term.is_nan() || term.abs() > prev_term.abs() {
+                return Err(TrigError::Overflow);
+            }
+
             result += term;
             n += 1;
         }
@@ -93,7 +100,7 @@ impl TrigFunctions for f64 {
     fn my_arccos(self) -> Result<Self::T, TrigError> {
         if self.to_radians() < -1.0 || self.to_radians() > 1.0 {
             // panic!("arccos is undefined for values outside the range [-1, 1]");
-            return Err(TrigError::OutOfRange(self));
+            return Err(TrigError::OutOfRangeForArccos(self));
         }
         // arccos(x) = π/2 - arcsin(x)
         let half_pi = FRAC_PI_2;
@@ -101,19 +108,26 @@ impl TrigFunctions for f64 {
         Ok(half_pi - arcsin_val)
     }
 
-    fn my_arctan(self) -> Option<Self::T> {
+    fn my_arctan(self) -> Result<Self::T, TrigError> {
         let x = self;
         let mut term = x;
         let mut result = x;
         let mut n = 1;
 
         while term.abs() > 1e-10 {
+            let prev_term = term;
             term *= -x * x / ((2 * n) as f64 + 1.0);
+
+            // オーバーフローをチェック
+            if term.is_infinite() || term.is_nan() || term.abs() > prev_term.abs() {
+                return Err(TrigError::Overflow);
+            }
+
             result += term;
             n += 1;
         }
 
-        Some(result)
+        Ok(result)
     }
 }
 

@@ -29,5 +29,8 @@ fn main() {
     }
 
     // arctanを実行
-    println!("arctan: {}", angle.my_arctan().unwrap());
+    match angle.my_arctan() {
+        Ok(result) => println!("arctan: {}", result),
+        Err(e) => println!("Error computing arccos({}): {}", angle, e),
+    }
 }
